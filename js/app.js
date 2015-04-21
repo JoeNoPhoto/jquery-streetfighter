@@ -17,7 +17,7 @@ $(document).ready(function() {
       500,
       function() {
         $(this).hide();
-        $(this).css('left', '600px');
+        $(this).css('left', '450px');
       }
     );
   })

@@ -1,21 +1,40 @@
 body {
   background-color: black;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 2.5em;
 }
 
+.keyword {
+  font-family: 'Special Elite', cursive;
+  color: #8a0707;
+  text-shadow: 3px 4px 5px rgba(0,0,0,.4)
+}
 .main {
+  display: flex;
+  justify-content: space-between;
   background-color: white;
   margin-top: 110px;
-  padding-left: 100px;
   min-width: 1200px;
   height: 500px;
-  position: relative;
   z-index: 1;
 }
 
+
+.press-on, .click-on{
+width: 350px;
+margin: 0;
+}
+
+.press-on{
+  align-self: flex-end;
+}
+
 .ryu {
-    width: 659px;
+    display: inline-flex;
+    min-width: 659px;
     height: 494px;
 }
+
 
 .ryu-ready,
 .ryu-still,
@@ -62,12 +81,7 @@ body {
   height: 90px;
   position: absolute;
   z-index: 10;
-  top: 170px;
-  left: 600px;
+  top: 280px;
+  left: 450px;
   float: left;
 }
-
-/** {
-  outline: red 1px solid;
-}
-*/
