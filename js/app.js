@@ -1,13 +1,13 @@
 'use strict';
 
 // Our resource...
-function Fighter(ryuSelector) {
+function Fighter(fighterSelector) {
   this.$hadouken = document.querySelector('.hadouken');
-  this.$ryu = document.querySelector(ryuSelector);
-  this.$ryuCool = this.$ryu.querySelector('.ryu-cool');
-  this.$ryuReady = this.$ryu.querySelector('.ryu-ready');
-  this.$ryuStill = this.$ryu.querySelector('.ryu-still');
-  this.$ryuThrowing = this.$ryu.querySelector('.ryu-throwing');
+  this.$fighter = document.querySelector(fighterSelector);
+  this.$fighterCool = this.$fighter.querySelector('.fighter-cool');
+  this.$fighterReady = this.$fighter.querySelector('.fighter-ready');
+  this.$fighterStill = this.$fighter.querySelector('.fighter-still');
+  this.$fighterThrowing = this.$fighter.querySelector('.fighter-throwing');
   this.state = 'still';
 }
 
@@ -18,8 +18,8 @@ Fighter.prototype.isReady = function() {
 Fighter.prototype.getReady = function() {
   if (!this.isReady()) {
     this.state = 'ready';
-    hide(this.$ryuCool, this.$ryuStill, this.$ryuThrowing);
-    show(this.$ryuReady);
+    hide(this.$fighterCool, this.$fighterStill, this.$fighterThrowing);
+    show(this.$fighterReady);
   }
 };
 
@@ -29,47 +29,36 @@ Fighter.prototype.isStill = function() {
 Fighter.prototype.standStill = function() {
   if (!this.isStill()) {
     this.state = 'still';
-    hide(this.$ryuCool, this.$ryuReady, this.$ryuThrowing);
-    show(this.$ryuStill);
+    hide(this.$fighterCool, this.$fighterReady, this.$fighterThrowing);
+    show(this.$fighterStill);
   }
 };
 
 Fighter.prototype.getGansta = function() {
-
-    hide(this.$ryuStill, this.$ryuReady, this.ryuThrowing);
-    show(this.$ryuCool);
+  // TODO ...
 };
 
-
-
 Fighter.prototype.throwHadouken = function() {
-    // TODO ...
-    // change to throwing image
-    hide(this.$ryuStill, this.$ryuReady, this.$ryuCool);
-    show(this.ryuThrowing);
-    //animate hadouken and play Hadouken sound
-
-    //return to standstill
-
+  // TODO ...
 };
 
 // Our app
 var ryu = new Fighter('.ryu');
 
-ryu.$ryu.addEventListener('mouseenter', function() {
+ryu.$fighter.addEventListener('mouseenter', function() {
   ryu.getReady();
 });
-ryu.$ryu.addEventListener('mouseleave', function() {
+ryu.$fighter.addEventListener('mouseleave', function() {
   ryu.standStill();
 });
 
-ryu.$ryu.addEventListener('', function(){
+ryu.$fighter.addEventListener('', function(){
 
 });
-ryu.$ryu.addEventListener('', function(){
+ryu.$fighter.addEventListener('', function(){
 
 });
-ryu.$ryu.addEventListener('', function(){
+ryu.$fighter.addEventListener('', function(){
 
 });
 
