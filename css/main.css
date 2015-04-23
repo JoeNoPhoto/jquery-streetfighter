@@ -26,42 +26,42 @@ body {
     height: 494px;
 }
 
-.ryu-ready,
-.ryu-still,
-.ryu-throwing,
-.ryu-cool {
+.fighter-ready,
+.fighter-still,
+.fighter-throwing,
+.fighter-cool {
   width: 659px;
   height: 494px;
 }
 
-.ryu-ready,
-.ryu-throwing,
-.ryu-cool,
+.fighter-ready,
+.fighter-throwing,
+.fighter-cool,
 .hadouken {
   display: none;
 }
 
-.ryu-ready {
+.fighter-ready {
   background-image: url('../images/ryu-ready-position.gif');
 }
 
-.ryu-still {
+.fighter-still {
   background-image: url('../images/ryu-standing-still.png');
 }
 
-.ryu-throwing {
+.fighter-throwing {
   background-image: url('../images/ryu-throwing-hadouken.png');
 }
 
-.ryu-cool {
+.fighter-cool {
   background-image: url('../images/ryu-cool.gif');
 }
 
 .hadouken,
-.ryu-ready,
-.ryu-still,
-.ryu-throwing,
-.ryu-cool {
+.fighter-ready,
+.fighter-still,
+.fighter-throwing,
+.fighter-cool {
   background-repeat: no-repeat;
 }
 
