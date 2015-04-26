@@ -1,8 +1,8 @@
 'use strict';
-
+/*jslint browser: true */
 // Our resource...
 function Fighter(fighterSelector) {
-  this.$hadouken = document.querySelector('.hadouken');
+  this.$hadouken = document.querySelector('#hadouken');
   this.$fighter = document.querySelector(fighterSelector);
   this.$fighterCool = this.$fighter.querySelector('.fighter-cool');
   this.$fighterReady = this.$fighter.querySelector('.fighter-ready');
@@ -16,7 +16,11 @@ Fighter.prototype.isReady = function() {
   return this.state === 'ready';
 };
 Fighter.prototype.getReady = function() {
-  if (!this.isReady()) {
+	if (this.$fighterCool.classList.contains('down'))
+		ryu.beCool();
+	else if(this.$fighterThrowing.classList.contains('down'))
+		ryu.throwHadouken();
+  else if (!this.isReady()) {
     this.state = 'ready';
     hide(this.$fighterCool, this.$fighterStill, this.$fighterThrowing);
     show(this.$fighterReady);
@@ -29,39 +33,82 @@ Fighter.prototype.isStill = function() {
 Fighter.prototype.standStill = function() {
   if (!this.isStill()) {
     this.state = 'still';
-    hide(this.$fighterCool, this.$fighterReady, this.$fighterThrowing);
+    hide(this.$fighterReady, this.$fighterCool, this.$fighterThrowing);
     show(this.$fighterStill);
   }
 };
 
-Fighter.prototype.getGansta = function() {
-  // TODO ...
+Fighter.prototype.beCool = function() {
+    this.$fighterCool.classList.add('down');
+    if ((this.state === 'ready')){
+    hide(this.$fighterReady);
+  } else {
+    hide(this.$fighterStill);
+    }
+    show(this.$fighterCool);
+};
+Fighter.prototype.wasCool = function() {
+  this.$fighterCool.classList.remove('down');
+  hide(this.$fighterCool);
+  if (this.state === 'ready')
+    show(this.$fighterReady);
+  else
+  	show(this.$fighterStill);
 };
 
 Fighter.prototype.throwHadouken = function() {
-  // TODO ...
+	hide(this.$fighterReady, this.$fighterCool, this.$fighterStill);
+	show(this.$fighterThrowing);
 };
-
+Fighter.prototype.threwHadouken = function() {
+  hide(this.$fighterThrowing);
+  show(this.$fighterReady);
+};
+Fighter.prototype.fireBall = function () {
+	show(this.$hadouken);
+	fireHadouken();
+};
+Fighter.prototype.ballFired = function(){
+ 	hide(this.$hadouken);
+ };
 // Our app
 var ryu = new Fighter('.ryu');
-
-ryu.$fighter.addEventListener('mouseenter', function() {
-  ryu.getReady();
+var addEventListener = (function(){
+	if(document.addEventListener)
+		return function (element, event, handler) {
+			element.addEventListener(event, handler, false);
+		};
+	else
+		return function (element, event, handler) {
+			element.attachEvemt('on' + event, handler);
+		};
+}());
+addEventListener(ryu.$fighter, 'mouseenter', function() {  ryu.getReady();
 });
-ryu.$fighter.addEventListener('mouseleave', function() {
+addEventListener(ryu.$fighter, 'mouseleave', function() {
   ryu.standStill();
 });
 
-ryu.$fighter.addEventListener('', function(){
+addEventListener(ryu.$fighter, 'mouseup', function(){
+	ryu.throwHadouken();
+	ryu.fireBall();
 
+	setTimeout(function(){
+		ryu.throwHadouken();
+		}, 500);
+	setTimeout(function(){
+		ryu.threwHadouken();
+		ryu.ballFired();}, 500);
 });
-ryu.$fighter.addEventListener('', function(){
 
+
+addEventListener(document, 'keydown', function(e) {
+  if (e.keyCode == 88)ryu.beCool();
 });
-ryu.$fighter.addEventListener('', function(){
-
+addEventListener(document, 'keyup', function(e) {
+  if (e.keyCode == 88)
+    ryu.wasCool();
 });
-
 
 // Some helpers...
 function hide() {
@@ -74,42 +121,8 @@ function show() {
     el.style.display = 'block';
   });
 }
-
-// $(document).ready(function() {
-//   $('.ryu')
-//   .mousedown(function() {
-//     playHadouken();
-//     $('.ryu-ready, .ryu-cool, .ryu-still').hide();
-//     $('.ryu-throwing').show();
-//     $('.hadouken').finish().show()
-//     .animate(
-//       {'left': '1020px'},
-//       500,
-//       function() {
-//         $(this).hide();
-//         $(this).css('left', '450px');
-//       }
-//     );
-//   })
-//   .mouseup(function() {
-//     $('.ryu-throwing, .ryu-cool, .ryu-still').hide();
-//     $('.ryu-ready').show();
-//   });
-
-//   $(document).keydown(function(event){
-//     if(event.keyCode == 88){
-//       $('.ryu-still, .ryu-ready, .ryu-throwing').hide();
-//       $('.ryu-cool').show();
-//     }
-//   }).keyup(function(event){
-//       if (event.keyCode == 88);
-//         $('.ryu-cool, .ryu-ready, .ryu-throwing').hide();
-//         $('.ryu-still').show();
-//     });
-// });
-
-function playHadouken () {
-  $('#hadouken-sound')[0].volume = 0.5;
+function fireHadouken () {
+  $('#hadouken-sound')[0].volume = 0.2;
   $('#hadouken-sound')[0].load();
   $('#hadouken-sound')[0].play();
 }
