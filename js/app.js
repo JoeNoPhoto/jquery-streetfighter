@@ -16,10 +16,10 @@ Fighter.prototype.isReady = function() {
   return this.state === 'ready';
 };
 Fighter.prototype.getReady = function() {
-	if (this.$fighterCool.classList.contains('down'))
-		ryu.beCool();
-	else if(this.$fighterThrowing.classList.contains('down'))
-		ryu.throwHadouken();
+  if (this.$fighterCool.classList.contains('down'))
+    ryu.beCool();
+  else if(this.$fighterThrowing.classList.contains('down'))
+    ryu.throwHadouken();
   else if (!this.isReady()) {
     this.state = 'ready';
     hide(this.$fighterCool, this.$fighterStill, this.$fighterThrowing);
@@ -39,13 +39,14 @@ Fighter.prototype.standStill = function() {
 };
 
 Fighter.prototype.beCool = function() {
-    this.$fighterCool.classList.add('down');
-    if ((this.state === 'ready')){
+  this.$fighterCool.classList.add('down');
+  if ((this.state === 'ready')){
     hide(this.$fighterReady);
-  } else {
+  }
+  else {
     hide(this.$fighterStill);
-    }
-    show(this.$fighterCool);
+  }
+  show(this.$fighterCool);
 };
 Fighter.prototype.wasCool = function() {
   this.$fighterCool.classList.remove('down');
@@ -53,61 +54,58 @@ Fighter.prototype.wasCool = function() {
   if (this.state === 'ready')
     show(this.$fighterReady);
   else
-  	show(this.$fighterStill);
+    show(this.$fighterStill);
 };
 
 Fighter.prototype.throwHadouken = function() {
-	hide(this.$fighterReady, this.$fighterCool, this.$fighterStill);
-	show(this.$fighterThrowing);
+  hide(this.$fighterReady, this.$fighterCool, this.$fighterStill);
+  show(this.$fighterThrowing);
 };
 Fighter.prototype.threwHadouken = function() {
-  hide(this.$fighterThrowing);
+  hide(this.$fighterThrowing, this.$fighterCool, this.$fighterStill);
   show(this.$fighterReady);
 };
 Fighter.prototype.fireBall = function () {
-	show(this.$hadouken);
-	fireHadouken();
+  show(this.$hadouken);
+  fireHadouken();
 };
 Fighter.prototype.ballFired = function(){
- 	hide(this.$hadouken);
- };
+  hide(this.$hadouken);
+};
 // Our app
 var ryu = new Fighter('.ryu');
 var addEventListener = (function(){
-	if(document.addEventListener)
-		return function (element, event, handler) {
-			element.addEventListener(event, handler, false);
-		};
-	else
-		return function (element, event, handler) {
-			element.attachEvemt('on' + event, handler);
-		};
+  if(document.addEventListener)
+    return function (element, event, handler) {
+      element.addEventListener(event, handler, false);
+    };
+  else
+    return function (element, event, handler) {
+    element.attachEvemt('on' + event, handler);
+  };
 }());
-addEventListener(ryu.$fighter, 'mouseenter', function() {  ryu.getReady();
+
+addEventListener(ryu.$fighter, 'mouseenter', function() {
+  ryu.getReady();
 });
 addEventListener(ryu.$fighter, 'mouseleave', function() {
   ryu.standStill();
 });
 
 addEventListener(ryu.$fighter, 'mouseup', function(){
-	ryu.throwHadouken();
-	ryu.fireBall();
-
-	setTimeout(function(){
-		ryu.throwHadouken();
-		}, 500);
-	setTimeout(function(){
-		ryu.threwHadouken();
-		ryu.ballFired();}, 500);
+  ryu.throwHadouken();
+  ryu.fireBall();
+  setTimeout(function(){ryu.throwHadouken();}, 500);
+  setTimeout(function(){ryu.threwHadouken(); ryu.ballFired();}, 500);
 });
-
 
 addEventListener(document, 'keydown', function(e) {
-  if (e.keyCode == 88)ryu.beCool();
-});
+  if (e.keyCode == 88)
+    ryu.beCool();
+  });
 addEventListener(document, 'keyup', function(e) {
   if (e.keyCode == 88)
-    ryu.wasCool();
+  ryu.wasCool();
 });
 
 // Some helpers...
