@@ -37,7 +37,7 @@ body {
 .fighter-ready,
 .fighter-throwing,
 .fighter-cool,
-#hadouken {
+.hadouken {
   display: none;
 }
 
@@ -57,7 +57,7 @@ body {
   background-image: url('../images/ryu-cool.gif');
 }
 
-#hadouken,
+.hadouken,
 .fighter-ready,
 .fighter-still,
 .fighter-throwing,
@@ -65,7 +65,7 @@ body {
   background-repeat: no-repeat;
 }
 
-#hadouken {
+.hadouken {
   background-image: url('../images/hadouken.gif');
   width: 156px;
   height: 90px;
@@ -74,20 +74,6 @@ body {
   top: 280px;
   left: 550px;
   float: left;
-  animation: fireBall 500ms forwards 1;
-  -moz-animation: fireBall 500ms forwards 1;
-  -webkit-animation: fireBall 500ms forwards 1;
-  -webkit-animation-fill-mode: forwards;
-  animation-fill-mode: forwards;
-}
-
-@-webkit-keyframes fireBall {
-  from {left: 550px;}
-  to {left: 1020px;}
-}
-@keyframes fireBall {
-  from {left: 550px;}
-  to {left: 1020px;}
 }
 
 .instructions

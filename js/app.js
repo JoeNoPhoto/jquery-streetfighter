@@ -1,79 +1,129 @@
 'use strict';
 /*jslint browser: true */
+var STATE = {
+	STILL: 'STILL',
+	COOL: 'COOL',
+	READY: 'READY',
+	THROW: 'THROW'
+};
+
+var LOCKED = {
+	YES: 'YES',
+	NO: 'NO',
+};
+
 // Our resource...
 function Fighter(fighterSelector) {
-  this.$hadouken = document.querySelector('#hadouken');
-  this.$fighter = document.querySelector(fighterSelector);
-  this.$fighterCool = this.$fighter.querySelector('.fighter-cool');
-  this.$fighterReady = this.$fighter.querySelector('.fighter-ready');
-  this.$fighterStill = this.$fighter.querySelector('.fighter-still');
-  this.$fighterThrowing = this.$fighter.querySelector('.fighter-throwing');
-  this.state = 'still';
+	this.$fighter = document.querySelector(fighterSelector);
+	this.$hadouken = this.$fighter.querySelector('.hadouken');
+	this.$fighterCool = this.$fighter.querySelector('.fighter-cool');
+	this.$fighterReady = this.$fighter.querySelector('.fighter-ready');
+	this.$fighterStill = this.$fighter.querySelector('.fighter-still');
+	this.$fighterThrowing = this.$fighter.querySelector('.fighter-throwing');
+	this.state = STATE.STILL;
 }
 
-// Its API
-Fighter.prototype.isReady = function() {
-  return this.state === 'ready';
-};
-Fighter.prototype.getReady = function() {
-  if (this.$fighterCool.classList.contains('down'))
-    ryu.beCool();
-  else if(this.$fighterThrowing.classList.contains('down'))
-    ryu.throwHadouken();
-  else if (!this.isReady()) {
-    this.state = 'ready';
-    hide(this.$fighterCool, this.$fighterStill, this.$fighterThrowing);
-    show(this.$fighterReady);
-  }
-};
-
 Fighter.prototype.isStill = function() {
-  return this.state === 'still';
+  return this.state === STATE.STILL;
 };
-Fighter.prototype.standStill = function() {
-  if (!this.isStill()) {
-    this.state = 'still';
-    hide(this.$fighterReady, this.$fighterCool, this.$fighterThrowing);
-    show(this.$fighterStill);
+Fighter.prototype.isReady = function() {
+  return this.state === STATE.READY;
+};
+Fighter.prototype.isCool = function() {
+  return this.state === STATE.COOL;
+};
+Fighter.prototype.isThrowing = function() {
+  return this.state === STATE.THROW;
+};
+
+Fighter.prototype.getStill = function() {
+	if(!this.isStill()) {
+    this.state = STATE.STILL;
+      hide(this.$fighterReady, this.$fighterThrowing, this.$fighterCool);
+      show(this.$fighterStill);
+  console.log(this.state);
   }
 };
 
-Fighter.prototype.beCool = function() {
-  this.$fighterCool.classList.add('down');
-  if ((this.state === 'ready')){
-    hide(this.$fighterReady);
-  }
-  else {
-    hide(this.$fighterStill);
-  }
-  show(this.$fighterCool);
-};
-Fighter.prototype.wasCool = function() {
-  this.$fighterCool.classList.remove('down');
-  hide(this.$fighterCool);
-  if (this.state === 'ready')
+Fighter.prototype.getReady = function() {
+	if(!this.isReady()) {
+    this.state = STATE.READY;
+	  hide(this.$fighterStill, this.$fighterThrowing, this.$fighterCool);
     show(this.$fighterReady);
-  else
-    show(this.$fighterStill);
+	}
+  console.log(this.state);
 };
 
-Fighter.prototype.throwHadouken = function() {
-  hide(this.$fighterReady, this.$fighterCool, this.$fighterStill);
-  show(this.$fighterThrowing);
+Fighter.prototype.getCool = function() {
+  if(!this.isCool()) {
+    this.oldState = this.state;
+    this.state = STATE.COOL;
+    hide(this.$fighterReady, this.$fighterThrowing, this.$fighterStill);
+    show(this.$fighterCool);
+  }
+  console.log(this.state);
 };
-Fighter.prototype.threwHadouken = function() {
-  hide(this.$fighterThrowing, this.$fighterCool, this.$fighterStill);
-  show(this.$fighterReady);
+
+Fighter.prototype.gotCool = function() {
+  if(this.oldState === 'READY'){
+    this.getReady();
+  } else {
+    this.getStill();
+  }
+  console.log(this.state);
 };
-Fighter.prototype.fireBall = function () {
-  show(this.$hadouken);
+
+Fighter.prototype.getFire = function() {
+  if(!this.isThrowing()) {
+    this.state = STATE.THROW;
+    this.useSuperpowers();
+  }
+  console.log(this.state);
+};
+
+Fighter.prototype.useSuperpowers = function() {
+  var fire = function(){
+		fireBall.style.left = currentPos + 'px';
+		currentPos += 30;
+		if(currentPos < 1020) {
+			fireBall.style.display = 'block';
+			requestAnimationFrame(fire);
+		} else {
+				fireBall.style.display = 'none';
+				fireBall.style.left = '500px';
+				currentPos = 500;
+		}
+		cancelAnimationFrame(fire);
+	};
+	// do {
+		hide(this.$fighterReady, this.$fighterStill, this.$fighterCool);
+		show(this.$fighterThrowing);
+	// } while(this.$hadouken.display.left < '1020px');
+
   fireHadouken();
+  fire();
 };
-Fighter.prototype.ballFired = function(){
-  hide(this.$hadouken);
-};
+
+// Some helpers...
+var currentPos = 500;
+function fireHadouken() {
+/*	$('#hadouken-sound')[0].volume = 0.2;
+	$('#hadouken-sound')[0].load();
+	$('#hadouken-sound')[0].play();*/
+}
+function hide() {
+  Array.prototype.forEach.call(arguments, function(el) {
+    el.style.display = 'none';
+  });
+}
+function show() {
+  Array.prototype.forEach.call(arguments, function(el) {
+    el.style.display = 'block';
+  });
+}
 // Our app
 var ryu = new Fighter('.ryu');
+var fireBall = ryu.$hadouken;
 var addEventListener = (function(){
   if(document.addEventListener)
     return function (element, event, handler) {
@@ -86,41 +136,19 @@ var addEventListener = (function(){
 }());
 
 addEventListener(ryu.$fighter, 'mouseenter', function() {
-  ryu.getReady();
+	ryu.getReady();
 });
 addEventListener(ryu.$fighter, 'mouseleave', function() {
-  ryu.standStill();
+	ryu.getStill();
 });
-
-addEventListener(ryu.$fighter, 'mouseup', function(){
-  ryu.throwHadouken();
-  ryu.fireBall();
-  setTimeout(function(){ryu.throwHadouken();}, 500);
-  setTimeout(function(){ryu.threwHadouken(); ryu.ballFired();}, 500);
+addEventListener(ryu.$fighter, 'click', function(){
+	ryu.getFire();
 });
-
 addEventListener(document, 'keydown', function(e) {
-  if (e.keyCode == 88)
-    ryu.beCool();
-  });
-addEventListener(document, 'keyup', function(e) {
-  if (e.keyCode == 88)
-  ryu.wasCool();
+	if (e.keyCode == 88)
+		ryu.getCool();
 });
-
-// Some helpers...
-function hide() {
-  Array.prototype.forEach.call(arguments, function(el) {
-    el.style.display = 'none';
-  });
-}
-function show() {
-  Array.prototype.forEach.call(arguments, function(el) {
-    el.style.display = 'block';
-  });
-}
-function fireHadouken () {
-  $('#hadouken-sound')[0].volume = 0.2;
-  $('#hadouken-sound')[0].load();
-  $('#hadouken-sound')[0].play();
-}
+addEventListener(document, 'keyup', function(e) {
+	if (e.keyCode == 88)
+		ryu.gotCool();
+});
