@@ -1,59 +1,116 @@
 'use strict';
+/*jslint browser: true */
+var STATE = {
+	STILL: 'STILL',
+	COOL: 'COOL',
+	READY: 'READY',
+	THROW: 'THROW'
+};
+
+var LOCKED = {
+	YES: 'YES',
+	NO: 'NO',
+};
 
 // Our resource...
-function Ryu(ryuSelector) {
-  this.$hadouken = document.querySelector('.hadouken');
-  this.$ryu = document.querySelector(ryuSelector);
-  this.$ryuCool = this.$ryu.querySelector('.ryu-cool');
-  this.$ryuReady = this.$ryu.querySelector('.ryu-ready');
-  this.$ryuStill = this.$ryu.querySelector('.ryu-still');
-  this.$ryuThrowing = this.$ryu.querySelector('.ryu-throwing');
-
-  this.state = 'still';
+function Fighter(fighterSelector) {
+	this.$fighter = document.querySelector(fighterSelector);
+	this.$hadouken = this.$fighter.querySelector('.hadouken');
+	this.$fighterCool = this.$fighter.querySelector('.fighter-cool');
+	this.$fighterReady = this.$fighter.querySelector('.fighter-ready');
+	this.$fighterStill = this.$fighter.querySelector('.fighter-still');
+	this.$fighterThrowing = this.$fighter.querySelector('.fighter-throwing');
+	this.state = STATE.STILL;
 }
 
-// Its API
-Ryu.prototype.isReady = function() {
-  return this.state === 'ready';
-}
-Ryu.prototype.getReady = function() {
-  if (!this.isReady()) {
-    this.state = 'ready';
-    hide(this.$ryuCool, this.$ryuStill, this.$ryuThrowing);
-    show(this.$ryuReady);
+Fighter.prototype.isStill = function() {
+  return this.state === STATE.STILL;
+};
+Fighter.prototype.isReady = function() {
+  return this.state === STATE.READY;
+};
+Fighter.prototype.isCool = function() {
+  return this.state === STATE.COOL;
+};
+Fighter.prototype.isThrowing = function() {
+  return this.state === STATE.THROW;
+};
+
+Fighter.prototype.getStill = function() {
+	if(!this.isStill()) {
+    this.state = STATE.STILL;
+      hide(this.$fighterReady, this.$fighterThrowing, this.$fighterCool);
+      show(this.$fighterStill);
+  console.log(this.state);
   }
-}
+};
 
-Ryu.prototype.isStill = function() {
-  return this.state === 'still';
-}
-Ryu.prototype.standStill = function() {
-  if (!this.isStill()) {
-    this.state = 'still';
-    hide(this.$ryuCool, this.$ryuReady, this.$ryuThrowing);
-    show(this.$ryuStill);
+Fighter.prototype.getReady = function() {
+	if(!this.isReady()) {
+    this.state = STATE.READY;
+	  hide(this.$fighterStill, this.$fighterThrowing, this.$fighterCool);
+    show(this.$fighterReady);
+	}
+  console.log(this.state);
+};
+
+Fighter.prototype.getCool = function() {
+  if(!this.isCool()) {
+    this.oldState = this.state;
+    this.state = STATE.COOL;
+    hide(this.$fighterReady, this.$fighterThrowing, this.$fighterStill);
+    show(this.$fighterCool);
   }
-}
+  console.log(this.state);
+};
 
-Ryu.prototype.getGansta = function() {
-  // TODO ...
-}
+Fighter.prototype.gotCool = function() {
+  if(this.oldState === 'READY'){
+    this.getReady();
+  } else {
+    this.getStill();
+  }
+  console.log(this.state);
+};
 
-Ryu.prototype.throwHadouken = function() {
-  // TODO ...
-}
+Fighter.prototype.getFire = function() {
+  if(!this.isThrowing()) {
+    this.state = STATE.THROW;
+    this.useSuperpowers();
+  }
+  console.log(this.state);
+};
 
-// Our app
-var ryu = new Ryu('.ryu');
+Fighter.prototype.useSuperpowers = function() {
+  var fire = function(){
+		fireBall.style.left = currentPos + 'px';
+		currentPos += 30;
+		if(currentPos < 1020) {
+			fireBall.style.display = 'block';
+			requestAnimationFrame(fire);
+		} else {
+				fireBall.style.display = 'none';
+				fireBall.style.left = '500px';
+				currentPos = 500;
+		}
+		cancelAnimationFrame(fire);
+	};
+	// do {
+		hide(this.$fighterReady, this.$fighterStill, this.$fighterCool);
+		show(this.$fighterThrowing);
+	// } while(this.$hadouken.display.left < '1020px');
 
-ryu.$ryu.addEventListener('mouseenter', function() {
-  ryu.getReady();
-});
-ryu.$ryu.addEventListener('mouseleave', function() {
-  ryu.standStill();
-});
+  fireHadouken();
+  fire();
+};
 
 // Some helpers...
+var currentPos = 500;
+function fireHadouken() {
+/*	$('#hadouken-sound')[0].volume = 0.2;
+	$('#hadouken-sound')[0].load();
+	$('#hadouken-sound')[0].play();*/
+}
 function hide() {
   Array.prototype.forEach.call(arguments, function(el) {
     el.style.display = 'none';
@@ -64,42 +121,34 @@ function show() {
     el.style.display = 'block';
   });
 }
+// Our app
+var ryu = new Fighter('.ryu');
+var fireBall = ryu.$hadouken;
+var addEventListener = (function(){
+  if(document.addEventListener)
+    return function (element, event, handler) {
+      element.addEventListener(event, handler, false);
+    };
+  else
+    return function (element, event, handler) {
+    element.attachEvemt('on' + event, handler);
+  };
+}());
 
-$(document).ready(function() {
-  $('.ryu')
-  .mousedown(function() {
-    playHadouken();
-    $('.ryu-ready, .ryu-cool, .ryu-still').hide();
-    $('.ryu-throwing').show();
-    $('.hadouken').finish().show()
-    .animate(
-      {'left': '1020px'},
-      500,
-      function() {
-        $(this).hide();
-        $(this).css('left', '450px');
-      }
-    );
-  })
-  .mouseup(function() {
-    $('.ryu-throwing, .ryu-cool, .ryu-still').hide();
-    $('.ryu-ready').show();
-  });
-
-  $(document).keydown(function(event){
-    if(event.keyCode == 88){
-      $('.ryu-still, .ryu-ready, .ryu-throwing').hide();
-      $('.ryu-cool').show();
-    }
-  }).keyup(function(event){
-      if (event.keyCode == 88);
-        $('.ryu-cool, .ryu-ready, .ryu-throwing').hide();
-        $('.ryu-still').show();
-    });
+addEventListener(ryu.$fighter, 'mouseenter', function() {
+	ryu.getReady();
 });
-
-function playHadouken () {
-  $('#hadouken-sound')[0].volume = 0.5;
-  $('#hadouken-sound')[0].load();
-  $('#hadouken-sound')[0].play();
-}
+addEventListener(ryu.$fighter, 'mouseleave', function() {
+	ryu.getStill();
+});
+addEventListener(ryu.$fighter, 'click', function(){
+	ryu.getFire();
+});
+addEventListener(document, 'keydown', function(e) {
+	if (e.keyCode == 88)
+		ryu.getCool();
+});
+addEventListener(document, 'keyup', function(e) {
+	if (e.keyCode == 88)
+		ryu.gotCool();
+});
